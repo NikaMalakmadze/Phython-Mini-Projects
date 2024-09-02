@@ -23,3 +23,6 @@ elif operation == "*":
     print(num1 * num2)
 else:
     print(f""" + operation + """ + " is not math operation!")      #If the input data is not a mathematical operation
+
+
+print("hi")
