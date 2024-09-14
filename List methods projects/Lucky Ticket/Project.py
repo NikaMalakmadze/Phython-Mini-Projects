@@ -12,23 +12,28 @@
 
 number = input()
 
-#splitting number into two parts
+if len(number) % 2 == 0:                                #checking if ticket number length is even
 
-first_part = number[ : len(number) // 2 ]                   #first part of the ticket number
-last_part = number[len(number) // 2 : ]                     #last part of the ticket number
+    #splitting number into two parts
 
-first_part_digit_list = first_part.replace("", " ").split()         #store the first part of the ticket number digits in first list
-last_part_digit_list = last_part.replace("", " ").split()           #store the last part of the ticket number digits in second list
+    first_part = number[ : len(number) // 2 ]                   #first part of the ticket number
+    last_part = number[len(number) // 2 : ]                     #last part of the ticket number
 
-first_part_digit_list = map(int, first_part_digit_list)               #converting every digit of list from string into int
-sum1 = sum(first_part_digit_list)                                     #The sum of the first part of the ticket number digits
+    first_part_digit_list = first_part.replace("", " ").split()         #store the first part of the ticket number digits in first list
+    last_part_digit_list = last_part.replace("", " ").split()           #store the last part of the ticket number digits in second list
 
-last_part_digit_list = map(int, last_part_digit_list)                 #converting every digit of list from string into int
-sum2 = sum(last_part_digit_list)                                      #The sum of the last part of the ticket number digits
+    first_part_digit_list = map(int, first_part_digit_list)               #converting every digit of list from string into int
+    sum1 = sum(first_part_digit_list)                                     #The sum of the first part of the ticket number digits
 
-#checking whether the ticket is lucky or not
+    last_part_digit_list = map(int, last_part_digit_list)                 #converting every digit of list from string into int
+    sum2 = sum(last_part_digit_list)                                      #The sum of the last part of the ticket number digits
 
-if sum1 == sum2:
-    print("Your Ticket is LUCKY")
+    #checking whether the ticket is lucky or not
+
+    if sum1 == sum2:
+        print("Your Ticket is LUCKY")
+    else:
+        print("Your Ticket is UNLUCKY")
+
 else:
-    print("Your Ticket is UNLUCKY")
+     print("Your Ticket is UNLUCKY")
