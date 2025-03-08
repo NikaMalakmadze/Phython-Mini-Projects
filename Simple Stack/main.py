@@ -1,4 +1,8 @@
 
+# custom error for stack size
+class StackSizeError(Exception):
+    pass
+
 # custom data type created by myself :) (:
 #  very simple stack(something like array)
 class Stack:
@@ -13,7 +17,7 @@ class Stack:
             if type(max_size) == int:
                 self.__max_size = max_size
             else:
-                raise ValueError("Max size argument must be Integer!")
+                raise StackSizeError("Max size argument value must be Integer!")
         else:
             self.__max_size = None          # if no max_size argument given, it's None
 
@@ -28,7 +32,7 @@ class Stack:
             elif self.__is_class(allowed_types):
                 self.__allowed_types = [allowed_types]
             else:
-                raise ValueError("allowed_types must be a class or a list of classes")
+                raise ValueError("allowed_types must be a class or a list of classes!")
         else:
             self.__allowed_types = None  # allow all types if not specified
 
@@ -89,6 +93,79 @@ class Stack:
     def reverse(self):
         self.__items.reverse() 
 
+    # simple method to clear stack
+    def clear(self):
+        self.__items.clear()
+    
+    # simple method to check if item is in stack
+    def contains(self, item):
+        return item in self.__items
+    
+    # simple method to get max size of stack
+    def max_size(self):
+        return self.__max_size
+    
+    # simple method to set new max size of stack
+    def set_max_size(self, new_max_size):
+        # check if given value is int
+        if type(new_max_size) == int:
+            # check if given number is more or equal to current number of items in stack
+            if new_max_size >= len(self.__items):
+                self.__max_size = new_max_size
+            else:
+                raise StackSizeError('Stack size is less then new max_size!')        # raise custom error if invalid size
+        else:
+            raise StackSizeError("Max size argument value must be Integer!")
+
+    # method to get item from stack using indexes
+    def __getitem__(self, index):
+        # check if index's value is integer
+        if type(index) == int:
+            if index < 0:                                   # handle negative indexes
+                index = len(self.__items) + index           # convert negative index to positive
+
+            # check if given index is in correct range
+            if 0 <= index < len(self.__items):
+                return self.__items[index]
+            else:
+                raise IndexError("Stack index out of range!")                             # raise error if it's out of range
+        else:
+            raise ValueError('Index must be integer!')                                    # raise error if its not integer
+
+    # method to set new value at a specific index using indexes
+    def __setitem__(self, index, value):
+        # check if index's value is integer
+        if type(index) == int:
+            if index < 0:                                   # handle negative indexes
+                index = len(self.__items) + index           # convert negative index to positive
+
+            # check if given index is in correct range
+            if 0 <= index < len(self.__items):
+                if self.__allowed_types is None or self.__check_type(value):
+                    self.__items[index] = value
+                else:
+                    raise ValueError("Not allowed type!")                                # raise error if incorrect type given
+            else:
+                raise IndexError("Stack index out of range!")                             # raise error if it's out of range
+        else:
+            raise ValueError('Index must be integer!')                                    # raise error if its not integer
+
+    # method to delete items in stack using indexes
+    def __delitem__(self, index):
+        # check if index's value is integer
+        if type(index) == int:
+            # check if given index is index of last item in stack
+            if index == -1:
+                del self.__items[index]
+            else:
+                raise IndexError("Can delete only last item in Stack!")                             # raise error if it's not index of last item
+        else:
+            raise ValueError('Index must be integer!')                                    # raise error if its not integer
+
+    # method to make stack iterable
+    def __iter__(self):
+        return iter(self.__items)
+
     # custom representation of my stack, cool!
     def __str__(self):
         return ":) " + ', '.join(str(item) for item in self.__items) + " (:" if self.__items else ":) Empty! (:"
@@ -111,4 +188,19 @@ print(my_stack.is_full())
 print(my_stack.size())
 print(my_stack.peek())
 print(my_stack.pop())
+
+print(my_stack.contains(554))
+print(my_stack.max_size())
+my_stack.set_max_size(32)
+print(my_stack.max_size())
+my_stack.clear()
 print(my_stack)
+my_stack.push(72.43)
+my_stack.push(362.783)
+my_stack.push('feage335')
+my_stack[0] = "ega"
+print(my_stack[-1])
+del my_stack[-1]
+print(my_stack)
+for i in my_stack:
+    print(i)
