@@ -1,4 +1,6 @@
 
+import copy
+
 # custom error for stack size
 class StackSizeError(Exception):
     pass
@@ -116,6 +118,19 @@ class Stack:
                 raise StackSizeError('Stack size is less then new max_size!')        # raise custom error if invalid size
         else:
             raise StackSizeError("Max size argument value must be Integer!")
+        
+    # simple method to get how many space left in stack if it has limit
+    def space_left(self):
+        return self.__max_size - len(self.__items) if self.__max_size else -1               # return -1 if no limit
+    
+    # method to get deep(so mutable objects inside of stack get copied) copy of stack
+    def copy_stack(self):
+        # create new stack with same properties as original
+        new_stack = Stack(self.__max_size, copy.deepcopy(self.__allowed_types))
+
+        new_stack.__items = copy.deepcopy(self.__items)         # set items to new stack from original stack
+
+        return new_stack                                        # return new stack
 
     # method to get item from stack using indexes
     def __getitem__(self, index):
@@ -204,3 +219,5 @@ del my_stack[-1]
 print(my_stack)
 for i in my_stack:
     print(i)
+my_stack2 = my_stack.copy_stack()
+print(my_stack2.space_left())
