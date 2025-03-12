@@ -203,6 +203,57 @@ def Algoritm_Dijkstra(grid, start, end, screen):
     
     return False     
 
+def GBFS(grid, start, end, screen):
+    
+    # used to track when pygame should update grid
+    step = 0        
+    # used in case if two or more cells on grid have same h score. 
+    #   so in this case priority will get cell that was visited first(with lowest count)
+    count = 0       
+
+    # create open set and put start cell with only h score and count
+    open_set = PriorityQueue()
+    open_set.put((h(start.get_position(), end.get_position()), count, start))
+    open_set_hash = {start}                                                         # create open_set hash and add start point to it
+
+    came_from = {}                                  # dictionary where will be stored from which cell did we get cell
+    visited = set()                                     # set that keeps cells that was already processed
+
+    while not open_set.empty():                             # run while open_set is not empty
+
+        current = open_set.get()[2]                             # get cell with lowest cost
+        open_set_hash.remove(current)                           # remove it from open set hash
+
+        if current in visited:                                  # skip if processed
+            continue
+
+        visited.add(current)                                    # add unvisited cell into visited cells set
+
+        if current == end:                                      # if current is end point/cell
+            reconstruct_path(came_from, end, grid, screen)                  # run path makes function
+            current.make_end()                                                  # make that cell end cell
+            return True                                                             # return True(path was finded)
+        
+        for neighbor in current.neighbors:                                          # loop through all neighbors of current cell
+            if neighbor not in visited and neighbor not in open_set_hash:               # check if it was not processed
+                count += 1                                                              
+                came_from[neighbor] = current                                           # add in dict from where did we get that cell
+
+                # add cell in open_set with its h score and count/priority
+                open_set.put((h(neighbor.get_position(), end.get_position()), count, neighbor))     
+                open_set_hash.add(neighbor)                                             # add cell in open set hash
+
+                neighbor.make_open()                # make that cell open
+        
+        step += 1
+        if step % ITEATION_SPEED == 0:              # update grid after every nth step
+            draw(grid, screen)
+        
+        if current != end:                          # if current cell is not end point make it closed
+            current.make_closed()
+        
+    return False
+
 def call_algorithm_by_name(grid, start, end, screen):
 
     if ALGORITHM == 'A_Star': 
@@ -212,6 +263,11 @@ def call_algorithm_by_name(grid, start, end, screen):
 
     elif ALGORITHM == 'Dijkstra': 
         finished = Algoritm_Dijkstra(grid, start, end, screen)
+        if finished:
+            return True
+        
+    elif ALGORITHM == 'GBFS': 
+        finished = GBFS(grid, start, end, screen)
         if finished:
             return True
 

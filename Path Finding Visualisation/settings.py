@@ -27,9 +27,9 @@ GAME_SCREEN_WIDTH = WIDTH - SETTINGS_SCREEN_WIDTH
 ROWS = 100
 
 #Avaliable Algorithms:
-#   Dijkstra OR A_Star
+#   Dijkstra, GBFS AND A_Star
 
-ALGORITHM = 'A_Star'
+ALGORITHM = 'GBFS'
 
 #   'How Fast will run algorithm'
 ITEATION_SPEED = 1
