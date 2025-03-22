@@ -6,6 +6,7 @@ from settings import ITEATION_SPEED, ALGORITHM
 from grid import draw
 
 from queue import PriorityQueue
+from collections import deque
 
 #Heuristic function that can get absolute distance from one point on grid to second point on grid
 #it needs both points as arguments
@@ -249,11 +250,53 @@ def GBFS(grid, start, end, screen):
         if step % ITEATION_SPEED == 0:              # update grid after every nth step
             draw(grid, screen)
         
-        if current != end:                          # if current cell is not end point make it closed
+        if current != start:                          # if current cell is not start point make it closed
             current.make_closed()
         
     return False
 
+def BFS(grid, start, end, screen):
+    # used to track when pygame should update grid
+    step = 0        
+
+    open_set = deque([start])   # create open set and put start cell in it
+
+    came_from = {}      # dictionary where will be stored from which cell did we get cell
+
+    visited = set()     # set that keeps cells that was already processed
+
+    while open_set:                     # run bfs while there is something in open_set
+        current = open_set.popleft()        # get cell from the left of open_set
+
+        if current == end:                                  # check if end cell was found
+            reconstruct_path(came_from, end, grid, screen)      # run reconstruct path function
+
+            current.make_end()          # mark current cell as end cell
+
+            return True     # return True
+    
+        if current in visited:          # skip cell if it is in visited
+            continue
+
+        visited.add(current)            # add cell in visited set
+
+        for neighbor in current.neighbors:          # loop through all neighbors of current cell
+            if neighbor not in visited:                 # check it if it's not visited
+                open_set.append(neighbor)               # add in open set
+                came_from[neighbor] = current       # add in dict from where did we get that cell
+
+                neighbor.make_open()                # make cell open
+
+        step += 1       
+
+        if step % ITEATION_SPEED == 0:              # update grid after every nth step
+            draw(grid, screen)
+
+        if current != start:            # if current cell is not start point        
+            current.make_closed()           # mark cell closed because it was processed 
+
+    return False    # return false if no path found
+        
 def call_algorithm_by_name(grid, start, end, screen):
 
     if ALGORITHM == 'A_Star': 
@@ -268,6 +311,11 @@ def call_algorithm_by_name(grid, start, end, screen):
         
     elif ALGORITHM == 'GBFS': 
         finished = GBFS(grid, start, end, screen)
+        if finished:
+            return True
+    
+    elif ALGORITHM == 'BFS':
+        finished = BFS(grid, start, end, screen)
         if finished:
             return True
 
