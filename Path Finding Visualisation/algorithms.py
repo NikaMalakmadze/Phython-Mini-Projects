@@ -273,7 +273,7 @@ def BFS(grid, start, end, screen):
 
             current.make_end()          # mark current cell as end cell
 
-            return True     # return True
+            return True     # return True, path was found
     
         if current in visited:          # skip cell if it is in visited
             continue
@@ -296,7 +296,50 @@ def BFS(grid, start, end, screen):
             current.make_closed()           # mark cell closed because it was processed 
 
     return False    # return false if no path found
+
+def DFS(grid, start, end, screen):
+    # used to track when pygame should update grid
+    step = 0
+
+    open_set = [start]      # create open set and put start cell in it
+
+    came_from = {}          # dictionary where will be stored from which cell did we get cell
+
+    visited = set()         # set that keeps cells that was already processed
+
+    while open_set:                     # run bfs while there is something in open_set
+        current = open_set.pop()                # get cell from the right of open_set
+
+        if current == end:                                      # check if end cell was found
+            reconstruct_path(came_from, end, grid, screen)          # run reconstruct path function
+
+            current.make_end()                                      # mark current cell as end cell
+
+            return True                                             # return True, path was found
         
+        if current in visited:                                  # skip cell if it is in visited
+            continue
+
+        visited.add(current)                                    # add cell in visited set
+
+        for neighbor in current.neighbors:                  # loop through all neighbors of current cell
+            if neighbor not in visited:                             # check it if it's not visited
+                came_from[neighbor] = current                           # add in dict from where did we get that cell
+
+                open_set.append(neighbor)                                # add neighbor in open set
+
+                current.make_open()                                     # make cell open
+
+        step += 1
+
+        if step % ITEATION_SPEED == 0:                      # update grid after every nth step
+            draw(grid, screen)
+
+        if current != start:                                # if current cell is not start point
+            current.make_closed()                               # mark cell closed because it was processed
+
+    return False                        # return false if no path found
+
 def call_algorithm_by_name(grid, start, end, screen):
 
     if ALGORITHM == 'A_Star': 
@@ -316,6 +359,11 @@ def call_algorithm_by_name(grid, start, end, screen):
     
     elif ALGORITHM == 'BFS':
         finished = BFS(grid, start, end, screen)
+        if finished:
+            return True
+        
+    elif ALGORITHM == 'DFS':
+        finished = DFS(grid, start, end, screen)
         if finished:
             return True
 
