@@ -216,3 +216,29 @@ if __name__ == '__main__':
     print(f'Video Path: {largest_video['path']}')
     print(f'Video Duration: {convert_seconds(largest_video['duration'])}')
     print(f'Video Size: {convert_bytes(largest_video['size'])}')
+
+    # ask user if he wants to save info as a json file
+    save_answ = input('Save Information into the json file?[y if yes]: ').lower()
+
+    if save_answ == 'y':
+
+        # iterate throught both dictionaries
+        for video_info in (longest_video, largest_video):
+            # format duration and size of each object/dict
+            video_info['duration'] = str(convert_seconds(video_info['duration']))
+            video_info['size'] = convert_bytes(video_info['size'])
+
+        # create dict with all output information
+        output_info = {
+                'total_videos': len(videos_list),
+                'total_duration': convert_seconds(total_seconds),
+                'total_size': convert_bytes(total_bytes),
+                'longest_video': longest_video,
+                'largest_video': largest_video,
+                'average_duration': convert_seconds(average_duration),
+                'average_size': convert_bytes(average_size)
+        }
+
+        # create new json file and write info on it
+        with open('VideoSearcher/search_information.json', 'w') as f:
+            json.dump(output_info, f, indent=4)
